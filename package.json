@@ -1,0 +1,44 @@
+{
+  "name": "peekachu",
+  "version": "0.1.0",
+  "description": "Password manager for AIs — store secrets in OS keychain, inject into child processes, scrub output",
+  "type": "module",
+  "main": "./dist/cli.js",
+  "bin": {
+    "peekachu": "./bin/peekachu.js"
+  },
+  "files": [
+    "dist",
+    "bin"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "typecheck": "tsc --noEmit"
+  },
+  "keywords": [
+    "secrets",
+    "keychain",
+    "ai",
+    "password-manager",
+    "scrubber",
+    "claude",
+    "cursor",
+    "devin"
+  ],
+  "license": "MIT",
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "commander": "^13.1.0"
+  },
+  "devDependencies": {
+    "@types/node": "^25.3.2",
+    "tsup": "^8.4.0",
+    "typescript": "^5.7.0",
+    "vitest": "^3.0.0"
+  }
+}
