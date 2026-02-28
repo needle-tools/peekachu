@@ -1,6 +1,6 @@
 {
   "name": "peekachu",
-  "version": "0.1.0",
+  "version": "0.1.0-alpha.1",
   "description": "Password manager for AIs — store secrets in OS keychain, inject into child processes, scrub output",
   "type": "module",
   "main": "./dist/cli.js",
@@ -29,6 +29,11 @@
     "devin"
   ],
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/needle-tools/peekachu.git"
+  },
+  "homepage": "https://github.com/needle-tools/peekachu",
   "engines": {
     "node": ">=18"
   },
