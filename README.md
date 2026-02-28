@@ -119,6 +119,10 @@ peekachu status
 - macOS or Linux
 - No native addons — works with `npx` out of the box
 
+## Built With
+
+This project was built with [Claude Code](https://claude.ai/claude-code).
+
 ## License
 
 MIT
