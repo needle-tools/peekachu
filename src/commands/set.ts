@@ -1,7 +1,9 @@
 import { createProvider } from "../providers/index.js";
 import { promptSecret } from "../input.js";
+import { detectProject } from "../project.js";
 
-export async function setCommand(name: string): Promise<void> {
+export async function setCommand(name: string, project?: string): Promise<void> {
+  const resolvedProject = project ?? detectProject();
   const value = await promptSecret(name);
 
   if (!value) {
@@ -11,6 +13,6 @@ export async function setCommand(name: string): Promise<void> {
   }
 
   const provider = createProvider();
-  await provider.set(name, value);
-  process.stderr.write(`Secret "${name}" stored successfully.\n`);
+  await provider.set(name, value, resolvedProject);
+  process.stderr.write(`Secret "${name}" stored successfully (project: ${resolvedProject}).\n`);
 }

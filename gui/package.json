@@ -1,0 +1,17 @@
+{
+  "name": "peekachu-gui",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "electrobun dev",
+    "dev": "electrobun dev",
+    "dev:watch": "electrobun dev --watch",
+    "build": "electrobun build",
+    "build:stable": "electrobun build --env stable"
+  },
+  "devDependencies": {
+    "electrobun": "latest",
+    "bun-types": "latest"
+  }
+}

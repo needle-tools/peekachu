@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Peekachu</title>
+  <link rel="stylesheet" href="views://mainview/style.css">
+  <script src="views://mainview/index.js" defer></script>
+</head>
+<body>
+  <header>
+    <h1>👀 Peekachu</h1>
+    <div class="project-selector">
+      <label for="project-select">Project:</label>
+      <select id="project-select">
+        <option value="default">default</option>
+      </select>
+    </div>
+  </header>
+
+  <main>
+    <section class="add-secret">
+      <h2>Add Secret</h2>
+      <form id="add-form">
+        <input type="text" id="secret-name" placeholder="SECRET_NAME" required autocomplete="off" />
+        <input type="password" id="secret-value" placeholder="Value" required autocomplete="off" />
+        <button type="submit">Save</button>
+      </form>
+      <div id="form-message" class="message" hidden></div>
+    </section>
+
+    <section class="secrets-list">
+      <h2>Secrets</h2>
+      <div id="empty-state" class="empty" hidden>No secrets stored.</div>
+      <table id="secrets-table" hidden>
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th class="actions-col">Actions</th>
+          </tr>
+        </thead>
+        <tbody id="secrets-body"></tbody>
+      </table>
+    </section>
+  </main>
+
+  <footer id="status-bar">
+    <span id="status-platform"></span>
+    <span id="status-provider"></span>
+    <span id="status-node"></span>
+  </footer>
+</body>
+</html>

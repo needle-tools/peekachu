@@ -1,10 +1,12 @@
 import { createProvider, type ProviderType } from "../providers/index.js";
+import { detectProject } from "../project.js";
 import { run } from "../runner.js";
 import type { ScrubberSecret } from "../scrubber.js";
 
 export interface RunCommandOptions {
   env: string[];
   ci?: boolean;
+  project?: string;
 }
 
 export async function runCommand(
@@ -26,12 +28,13 @@ export async function runCommand(
 
   const providerType: ProviderType = options.ci ? "ci" : "keychain";
   const provider = createProvider(providerType);
+  const resolvedProject = options.project ?? detectProject();
 
   const secrets: ScrubberSecret[] = [];
   const envVars: Record<string, string> = {};
 
   for (const name of envNames) {
-    const value = await provider.get(name);
+    const value = await provider.get(name, resolvedProject);
     if (value === null) {
       process.stderr.write(
         `Error: secret "${name}" not found in ${providerType} provider.\n`,

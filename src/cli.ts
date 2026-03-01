@@ -4,6 +4,7 @@ import { listCommand } from "./commands/list.js";
 import { deleteCommand } from "./commands/delete.js";
 import { runCommand } from "./commands/run.js";
 import { statusCommand } from "./commands/status.js";
+import { initCommand } from "./commands/init.js";
 
 const program = new Command();
 
@@ -15,22 +16,25 @@ program
 program
   .command("set <name>")
   .description("Store a secret (prompts via native OS dialog)")
-  .action(async (name: string) => {
-    await setCommand(name);
+  .option("-p, --project <project>", "Project namespace")
+  .action(async (name: string, options: { project?: string }) => {
+    await setCommand(name, options.project);
   });
 
 program
   .command("list")
   .description("List stored secret names (never values)")
-  .action(async () => {
-    await listCommand();
+  .option("-p, --project <project>", "Project namespace")
+  .action(async (options: { project?: string }) => {
+    await listCommand(options.project);
   });
 
 program
   .command("delete <name>")
   .description("Delete a stored secret")
-  .action(async (name: string) => {
-    await deleteCommand(name);
+  .option("-p, --project <project>", "Project namespace")
+  .action(async (name: string, options: { project?: string }) => {
+    await deleteCommand(name, options.project);
   });
 
 program
@@ -38,6 +42,7 @@ program
   .description("Run a command with secrets injected and output scrubbed")
   .option("-e, --env <name...>", "Secret name(s) to inject as env vars")
   .option("--ci", "CI mode: read secrets from environment, scrub only")
+  .option("-p, --project <project>", "Project namespace")
   .argument("<command...>", "Command to run (after --)")
   .action(async (commandArgs: string[], options) => {
     await runCommand(commandArgs, options);
@@ -48,6 +53,14 @@ program
   .description("Show platform and provider info")
   .action(() => {
     statusCommand();
+  });
+
+program
+  .command("init")
+  .description("Create a .peekachu project config in the current directory")
+  .argument("[project]", "Project name (defaults to directory name)")
+  .action((project?: string) => {
+    initCommand(project);
   });
 
 program.parseAsync().catch((err) => {

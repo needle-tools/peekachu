@@ -4,7 +4,7 @@ import { promisify } from "node:util";
 import { resolve } from "node:path";
 
 const execFileAsync = promisify(execFile);
-const cliPath = resolve(import.meta.dirname, "../../dist/cli.js");
+const cliPath = resolve(import.meta.dirname, "../../dist/cli.mjs");
 
 function cli(args: string[], env?: Record<string, string>) {
   return execFileAsync("node", [cliPath, ...args], {

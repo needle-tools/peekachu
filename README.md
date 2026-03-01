@@ -96,6 +96,74 @@ peekachu status
 # Node:     v22.0.0
 ```
 
+## Project Namespaces
+
+Secrets are scoped per project so the same secret name (e.g. `DISCORD_WEBHOOK`) can have different values in different projects.
+
+### How it works
+
+- Secrets are stored in the keychain as `project/SECRET_NAME` (e.g. `website/DISCORD_WEBHOOK`)
+- The default project is `default` — secrets without a project go here
+- Peekachu auto-detects the project by looking for a `.peekachu` file in the current directory (or parents)
+
+### Setting up a project
+
+```bash
+# Create a .peekachu config in your project root
+peekachu init myproject
+
+# Or let it default to the directory name
+peekachu init
+```
+
+This creates a `.peekachu` file:
+
+```json
+{ "project": "myproject" }
+```
+
+### Using projects
+
+```bash
+# Auto-detects project from .peekachu file (or falls back to "default")
+peekachu set DISCORD_WEBHOOK
+peekachu list
+peekachu run --env DISCORD_WEBHOOK -- node bot.js
+
+# Explicit project override
+peekachu set --project website DISCORD_WEBHOOK
+peekachu list --project website
+peekachu run --project api --env DISCORD_WEBHOOK -- node bot.js
+```
+
+## GUI App
+
+Peekachu includes a desktop GUI built with [Electrobun](https://github.com/blackboardsh/electrobun) for managing secrets visually.
+
+### Features
+
+- Project selector dropdown — switch between projects
+- Secrets list — see all secret names for the selected project (values are never shown)
+- Add secrets — name + password field
+- Delete secrets — per-row delete with inline confirmation
+- Status bar — platform and provider info
+
+### Running the GUI
+
+```bash
+# From the repo root
+npm run gui
+
+# Or manually
+cd gui
+bun install
+bun start
+```
+
+> Requires [Bun](https://bun.sh) to be installed.
+
+Secrets set via the CLI show up in the GUI and vice versa — they share the same OS keychain storage.
+
 ## How It Works
 
 1. **Secrets are stored in the OS keychain** — macOS Keychain (`security` CLI) or Linux Secret Service (`secret-tool` CLI). No config files, no `.env` files, no plaintext on disk.
@@ -118,6 +186,7 @@ peekachu status
 - Node.js 18+
 - macOS or Linux
 - No native addons — works with `npx` out of the box
+- GUI requires [Bun](https://bun.sh)
 
 ## Built With
 

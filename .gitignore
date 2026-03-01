@@ -2,3 +2,6 @@ node_modules/
 dist/
 *.tsbuildinfo
 .DS_Store
+gui/build/
+gui/node_modules/
+gui/bun.lock
