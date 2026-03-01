@@ -20,7 +20,7 @@ const addForm = document.getElementById("add-form") as HTMLFormElement;
 const secretNameInput = document.getElementById("secret-name") as HTMLInputElement;
 const secretValueInput = document.getElementById("secret-value") as HTMLInputElement;
 const secretCommentInput = document.getElementById("secret-comment") as HTMLInputElement;
-const formMessage = document.getElementById("form-message") as HTMLDivElement;
+const toastContainer = document.getElementById("toast-container") as HTMLDivElement;
 const emptyState = document.getElementById("empty-state") as HTMLDivElement;
 const secretsTable = document.getElementById("secrets-table") as HTMLTableElement;
 const secretsBody = document.getElementById("secrets-body") as HTMLTableSectionElement;
@@ -32,11 +32,13 @@ let comments: Record<string, string> = {};
 // --- Helpers ---
 
 function showMessage(text: string, type: "success" | "error") {
-  formMessage.textContent = text;
-  formMessage.className = `message ${type}`;
-  formMessage.hidden = false;
+  const toast = document.createElement("div");
+  toast.className = `toast ${type}`;
+  toast.textContent = text;
+  toastContainer.appendChild(toast);
   setTimeout(() => {
-    formMessage.hidden = true;
+    toast.classList.add("fade-out");
+    toast.addEventListener("transitionend", () => toast.remove());
   }, 3000);
 }
 

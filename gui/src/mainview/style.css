@@ -199,19 +199,54 @@ h2 {
   cursor: not-allowed;
 }
 
-.message {
-  margin-top: 8px;
-  font-size: 13px;
-  padding: 6px 10px;
+.toast-container {
+  position: fixed;
+  bottom: 40px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column-reverse;
+  align-items: center;
+  gap: 8px;
+  z-index: 1000;
+  pointer-events: none;
+}
+
+.toast {
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
   border-radius: var(--radius);
+  padding: 10px 20px;
+  font-size: 13px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  pointer-events: auto;
+  animation: toast-in 0.25s ease-out;
+  transition: opacity 0.2s ease-out;
 }
 
-.message.success {
-  color: var(--success);
+.toast.success {
+  border-left: 3px solid var(--success);
+  color: var(--text);
 }
 
-.message.error {
-  color: var(--danger);
+.toast.error {
+  border-left: 3px solid var(--danger);
+  color: var(--text);
+}
+
+.toast.fade-out {
+  opacity: 0;
+}
+
+@keyframes toast-in {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .empty {
