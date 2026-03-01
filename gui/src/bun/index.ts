@@ -396,7 +396,7 @@ const win = new BrowserWindow({
   title: "Peekachu",
   url: "views://mainview/index.html",
   frame: {
-    width: 720,
+    width: 880,
     height: 560,
     x: 200,
     y: 200,

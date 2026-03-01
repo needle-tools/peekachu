@@ -76,14 +76,11 @@ header h1 {
   color: #1a1a1a;
   border: none;
   border-radius: var(--radius);
-  width: 28px;
-  height: 28px;
-  font-size: 16px;
+  padding: 6px 10px;
+  font-size: 14px;
   font-weight: 600;
+  line-height: 1;
   cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
   transition: background 0.15s;
 }
 
@@ -102,7 +99,7 @@ header h1 {
   color: var(--text);
   border: 1px solid var(--border);
   border-radius: var(--radius);
-  padding: 4px 8px;
+  padding: 6px 12px;
   font-size: 13px;
   width: 140px;
   outline: none;
@@ -118,8 +115,8 @@ header h1 {
   color: #1a1a1a;
   border: none;
   border-radius: var(--radius);
-  padding: 4px 12px;
-  font-size: 12px;
+  padding: 6px 12px;
+  font-size: 13px;
   font-weight: 600;
   cursor: pointer;
   white-space: nowrap;
