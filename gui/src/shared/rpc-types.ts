@@ -23,9 +23,9 @@ export type PeekachuRPC = {
         params: {};
         response: { platform: string; provider: string; node: string };
       };
-      getComments: {
+      getSecretMeta: {
         params: { project: string };
-        response: Record<string, string>;
+        response: Record<string, { comment?: string; createdAt?: string }>;
       };
       setComment: {
         params: { project: string; name: string; comment: string };

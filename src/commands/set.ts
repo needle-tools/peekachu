@@ -1,7 +1,7 @@
 import { createProvider } from "../providers/index.js";
 import { promptSecret } from "../input.js";
 import { detectProject } from "../project.js";
-import { setComment } from "../metadata.js";
+import { setComment, setCreatedAt } from "../metadata.js";
 
 export async function setCommand(name: string, project?: string, comment?: string): Promise<void> {
   const resolvedProject = project ?? detectProject();
@@ -15,6 +15,7 @@ export async function setCommand(name: string, project?: string, comment?: strin
 
   const provider = createProvider();
   await provider.set(name, value, resolvedProject);
+  await setCreatedAt(name, resolvedProject);
 
   if (comment) {
     await setComment(name, comment, resolvedProject);

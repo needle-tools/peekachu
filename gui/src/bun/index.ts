@@ -335,6 +335,14 @@ const rpc = BrowserView.defineRPC<PeekachuRPC>({
       },
       setSecret: async ({ project, name, value }) => {
         await keychainSet(name, value, project);
+        // Store createdAt in metadata
+        const data = await loadMetadata();
+        const key = `${project}/${name}`;
+        const existing = data[key] as { comment?: string; createdAt?: string } | undefined;
+        if (!existing?.createdAt) {
+          data[key] = { ...existing, createdAt: new Date().toISOString() };
+          await saveMetadata(data);
+        }
       },
       deleteSecret: async ({ project, name }) => {
         const deleted = await keychainDelete(name, project);
@@ -355,14 +363,17 @@ const rpc = BrowserView.defineRPC<PeekachuRPC>({
           node: process.version,
         };
       },
-      getComments: async ({ project }) => {
+      getSecretMeta: async ({ project }) => {
         const data = await loadMetadata();
         const prefix = `${project}/`;
-        const result: Record<string, string> = {};
+        const result: Record<string, { comment?: string; createdAt?: string }> = {};
         for (const [key, value] of Object.entries(data)) {
           if (key === "projects") continue;
-          if (key.startsWith(prefix) && value && typeof value === "object" && "comment" in value && value.comment) {
-            result[key.slice(prefix.length)] = value.comment;
+          if (key.startsWith(prefix) && value && typeof value === "object") {
+            const meta = value as { comment?: string; createdAt?: string };
+            if (meta.comment || meta.createdAt) {
+              result[key.slice(prefix.length)] = { comment: meta.comment, createdAt: meta.createdAt };
+            }
           }
         }
         return result;

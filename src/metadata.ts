@@ -4,6 +4,7 @@ import { homedir, platform } from "node:os";
 
 interface SecretMetadata {
   comment?: string;
+  createdAt?: string;
 }
 
 interface MetadataStore {
@@ -55,6 +56,16 @@ export async function setComment(name: string, comment: string, project?: string
   await saveMetadata(data);
 }
 
+export async function setCreatedAt(name: string, project?: string): Promise<void> {
+  const data = await loadMetadata();
+  const key = secretKey(name, project);
+  const existing = data[key] as SecretMetadata | undefined;
+  if (!existing?.createdAt) {
+    data[key] = { ...existing, createdAt: new Date().toISOString() };
+    await saveMetadata(data);
+  }
+}
+
 export async function deleteComment(name: string, project?: string): Promise<void> {
   const data = await loadMetadata();
   const key = secretKey(name, project);
@@ -72,6 +83,22 @@ export async function listComments(project?: string): Promise<Record<string, str
     if (key === "projects") continue;
     if (key.startsWith(prefix) && value && typeof value === "object" && "comment" in value && value.comment) {
       result[key.slice(prefix.length)] = value.comment;
+    }
+  }
+  return result;
+}
+
+export async function listSecretMeta(project?: string): Promise<Record<string, { comment?: string; createdAt?: string }>> {
+  const data = await loadMetadata();
+  const prefix = `${project ?? "default"}/`;
+  const result: Record<string, { comment?: string; createdAt?: string }> = {};
+  for (const [key, value] of Object.entries(data)) {
+    if (key === "projects") continue;
+    if (key.startsWith(prefix) && value && typeof value === "object") {
+      const meta = value as SecretMetadata;
+      if (meta.comment || meta.createdAt) {
+        result[key.slice(prefix.length)] = { comment: meta.comment, createdAt: meta.createdAt };
+      }
     }
   }
   return result;

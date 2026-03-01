@@ -27,7 +27,7 @@ const secretsBody = document.getElementById("secrets-body") as HTMLTableSectionE
 
 // --- State ---
 let currentProject = "default";
-let comments: Record<string, string> = {};
+let secretMeta: Record<string, { comment?: string; createdAt?: string }> = {};
 
 // --- Helpers ---
 
@@ -59,13 +59,19 @@ async function loadProjects() {
   }
 }
 
-async function loadComments() {
-  comments = await electroview.rpc.request.getComments({ project: currentProject });
+async function loadSecretMeta() {
+  secretMeta = await electroview.rpc.request.getSecretMeta({ project: currentProject });
+}
+
+function formatDate(iso?: string): string {
+  if (!iso) return "";
+  const d = new Date(iso);
+  return d.toLocaleDateString(undefined, { year: "numeric", month: "short", day: "numeric" });
 }
 
 async function loadSecrets() {
   const secrets = await electroview.rpc.request.listSecrets({ project: currentProject });
-  await loadComments();
+  await loadSecretMeta();
   secretsBody.innerHTML = "";
 
   if (secrets.length === 0) {
@@ -86,8 +92,13 @@ async function loadSecrets() {
 
     const tdComment = document.createElement("td");
     tdComment.className = "comment-cell";
-    tdComment.textContent = comments[name] ?? "";
+    tdComment.textContent = secretMeta[name]?.comment ?? "";
     tr.appendChild(tdComment);
+
+    const tdCreated = document.createElement("td");
+    tdCreated.className = "created-cell";
+    tdCreated.textContent = formatDate(secretMeta[name]?.createdAt);
+    tr.appendChild(tdCreated);
 
     const tdActions = document.createElement("td");
     const deleteBtn = document.createElement("button");
