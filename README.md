@@ -9,17 +9,17 @@ npx peekachu run --env DB_PASSWORD -- node server.js
 ```
 
 ```
-             AI Agent                peekachu               Child Process
-            (sees nothing)                                  (has secrets)
-                 |                       |                       |
-                 |--- run --env ... ---->|                       |
-                 |                       |-- fetch from keychain |
-                 |                       |-- inject env vars --->|
-                 |                       |                       |--- runs
-                 |                       |<-- stdout/stderr -----|
-                 |<-- scrubbed output ---|                       |
-                 |                       |                       |
-          [REDACTED:NAME]          replaces secrets         real values
+   AI Agent                peekachu               Child Process
+  (sees nothing)                                  (has secrets)
+       |                       |                       |
+       |--- run --env ... ---->|                       |
+       |                       |-- fetch from keychain |
+       |                       |-- inject env vars --->|
+       |                       |                       |--- runs
+       |                       |<-- stdout/stderr -----|
+       |<-- scrubbed output ---|                       |
+       |                       |                       |
+[REDACTED:NAME]          replaces secrets         real values
 ```
 
 ## Quick Start
