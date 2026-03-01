@@ -21,6 +21,14 @@ export async function promptSecret(name: string): Promise<string> {
     }
   }
 
+  if (platform === "windows") {
+    try {
+      return await promptWithPowerShell(name);
+    } catch {
+      // Fall back to TTY
+    }
+  }
+
   return await promptFromTTY(name);
 }
 
@@ -35,6 +43,16 @@ async function promptWithOsascript(name: string): Promise<string> {
 
   const { stdout } = await execFileAsync("osascript", ["-e", script]);
   return stdout.replace(/\n$/, "");
+}
+
+async function promptWithPowerShell(name: string): Promise<string> {
+  const script =
+    `Add-Type -AssemblyName Microsoft.VisualBasic; ` +
+    `[Microsoft.VisualBasic.Interaction]::InputBox('Enter secret value for: ${name}', 'peekachu', '')`;
+  const { stdout } = await execFileAsync("powershell.exe", [
+    "-NoProfile", "-NonInteractive", "-Command", script,
+  ]);
+  return stdout.replace(/\r?\n$/, "");
 }
 
 async function promptFromTTY(name: string): Promise<string> {

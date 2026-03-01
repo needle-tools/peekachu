@@ -15,6 +15,11 @@
       <select id="project-select">
         <option value="default">default</option>
       </select>
+      <button id="add-project-btn" class="btn-add-project" title="Create project">+</button>
+      <div id="add-project-form" class="add-project-form" hidden>
+        <input type="text" id="new-project-name" placeholder="project-name" autocomplete="off" />
+        <button id="create-project-btn" class="btn-create-project">Create</button>
+      </div>
     </div>
   </header>
 
@@ -24,6 +29,7 @@
       <form id="add-form">
         <input type="text" id="secret-name" placeholder="SECRET_NAME" required autocomplete="off" />
         <input type="password" id="secret-value" placeholder="Value" required autocomplete="off" />
+        <input type="text" id="secret-comment" placeholder="Comment (optional)" autocomplete="off" />
         <button type="submit">Save</button>
       </form>
       <div id="form-message" class="message" hidden></div>
@@ -36,6 +42,7 @@
         <thead>
           <tr>
             <th>Name</th>
+            <th>Comment</th>
             <th class="actions-col">Actions</th>
           </tr>
         </thead>

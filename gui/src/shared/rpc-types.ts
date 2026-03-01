@@ -23,6 +23,18 @@ export type PeekachuRPC = {
         params: {};
         response: { platform: string; provider: string; node: string };
       };
+      getComments: {
+        params: { project: string };
+        response: Record<string, string>;
+      };
+      setComment: {
+        params: { project: string; name: string; comment: string };
+        response: void;
+      };
+      createProject: {
+        params: { project: string };
+        response: void;
+      };
     };
     messages: {};
   }>;

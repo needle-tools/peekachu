@@ -17,16 +17,18 @@ program
   .command("set <name>")
   .description("Store a secret (prompts via native OS dialog)")
   .option("-p, --project <project>", "Project namespace")
-  .action(async (name: string, options: { project?: string }) => {
-    await setCommand(name, options.project);
+  .option("-c, --comment <text>", "Comment describing the secret")
+  .action(async (name: string, options: { project?: string; comment?: string }) => {
+    await setCommand(name, options.project, options.comment);
   });
 
 program
   .command("list")
   .description("List stored secret names (never values)")
   .option("-p, --project <project>", "Project namespace")
-  .action(async (options: { project?: string }) => {
-    await listCommand(options.project);
+  .option("--comments", "Show comments alongside secret names")
+  .action(async (options: { project?: string; comments?: boolean }) => {
+    await listCommand(options.project, options.comments);
   });
 
 program

@@ -12,9 +12,14 @@ const electroview = new Electroview({ rpc });
 
 // --- DOM elements ---
 const projectSelect = document.getElementById("project-select") as HTMLSelectElement;
+const addProjectBtn = document.getElementById("add-project-btn") as HTMLButtonElement;
+const addProjectForm = document.getElementById("add-project-form") as HTMLDivElement;
+const newProjectNameInput = document.getElementById("new-project-name") as HTMLInputElement;
+const createProjectBtn = document.getElementById("create-project-btn") as HTMLButtonElement;
 const addForm = document.getElementById("add-form") as HTMLFormElement;
 const secretNameInput = document.getElementById("secret-name") as HTMLInputElement;
 const secretValueInput = document.getElementById("secret-value") as HTMLInputElement;
+const secretCommentInput = document.getElementById("secret-comment") as HTMLInputElement;
 const formMessage = document.getElementById("form-message") as HTMLDivElement;
 const emptyState = document.getElementById("empty-state") as HTMLDivElement;
 const secretsTable = document.getElementById("secrets-table") as HTMLTableElement;
@@ -22,6 +27,7 @@ const secretsBody = document.getElementById("secrets-body") as HTMLTableSectionE
 
 // --- State ---
 let currentProject = "default";
+let comments: Record<string, string> = {};
 
 // --- Helpers ---
 
@@ -51,8 +57,13 @@ async function loadProjects() {
   }
 }
 
+async function loadComments() {
+  comments = await electroview.rpc.request.getComments({ project: currentProject });
+}
+
 async function loadSecrets() {
   const secrets = await electroview.rpc.request.listSecrets({ project: currentProject });
+  await loadComments();
   secretsBody.innerHTML = "";
 
   if (secrets.length === 0) {
@@ -70,6 +81,11 @@ async function loadSecrets() {
     const tdName = document.createElement("td");
     tdName.textContent = name;
     tr.appendChild(tdName);
+
+    const tdComment = document.createElement("td");
+    tdComment.className = "comment-cell";
+    tdComment.textContent = comments[name] ?? "";
+    tr.appendChild(tdComment);
 
     const tdActions = document.createElement("td");
     const deleteBtn = document.createElement("button");
@@ -124,6 +140,7 @@ addForm.addEventListener("submit", async (e) => {
   e.preventDefault();
   const name = secretNameInput.value.trim();
   const value = secretValueInput.value;
+  const comment = secretCommentInput.value.trim();
 
   if (!name || !value) return;
 
@@ -136,8 +153,18 @@ addForm.addEventListener("submit", async (e) => {
       name,
       value,
     });
+
+    if (comment) {
+      await electroview.rpc.request.setComment({
+        project: currentProject,
+        name,
+        comment,
+      });
+    }
+
     secretNameInput.value = "";
     secretValueInput.value = "";
+    secretCommentInput.value = "";
     showMessage(`Secret "${name}" saved.`, "success");
     await refresh();
   } catch (err: unknown) {
@@ -165,6 +192,50 @@ async function handleDelete(name: string) {
     showMessage(msg, "error");
   }
 }
+
+// --- Project creation ---
+
+addProjectBtn.addEventListener("click", () => {
+  addProjectBtn.hidden = true;
+  addProjectForm.hidden = false;
+  newProjectNameInput.value = "";
+  newProjectNameInput.focus();
+});
+
+function cancelProjectCreation() {
+  addProjectForm.hidden = true;
+  addProjectBtn.hidden = false;
+}
+
+newProjectNameInput.addEventListener("keydown", (e) => {
+  if (e.key === "Escape") cancelProjectCreation();
+});
+
+createProjectBtn.addEventListener("click", async () => {
+  const name = newProjectNameInput.value.trim().toLowerCase();
+  if (!name) return;
+
+  createProjectBtn.disabled = true;
+  try {
+    await electroview.rpc.request.createProject({ project: name });
+    currentProject = name;
+    cancelProjectCreation();
+    await refresh();
+    showMessage(`Project "${name}" created.`, "success");
+  } catch (err: unknown) {
+    const msg = err instanceof Error ? err.message : "Failed to create project";
+    showMessage(msg, "error");
+  } finally {
+    createProjectBtn.disabled = false;
+  }
+});
+
+newProjectNameInput.addEventListener("keydown", (e) => {
+  if (e.key === "Enter") {
+    e.preventDefault();
+    createProjectBtn.click();
+  }
+});
 
 // --- Init ---
 loadStatus();
