@@ -5,6 +5,7 @@ import { deleteCommand } from "./commands/delete.js";
 import { runCommand } from "./commands/run.js";
 import { statusCommand } from "./commands/status.js";
 import { initCommand } from "./commands/init.js";
+import { guiCommand } from "./commands/gui.js";
 
 const program = new Command();
 
@@ -63,6 +64,13 @@ program
   .argument("[project]", "Project name (defaults to directory name)")
   .action((project?: string) => {
     initCommand(project);
+  });
+
+program
+  .command("gui")
+  .description("Open the desktop GUI")
+  .action(async () => {
+    await guiCommand();
   });
 
 program.parseAsync().catch((err) => {
